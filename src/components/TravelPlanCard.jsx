@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-function TravelPlanCard({ plan }) {
+function TravelPlanCard({ plan, addToFavorites }) {
   const [travelPlan, setTravelPlan] = useState(plan);
+  const [colorIndex, setColorIndex] = useState({});
 
   const colorsArray = ["purple", "blue", "green", "yellow", "orange", "red"];
 
@@ -10,7 +11,14 @@ function TravelPlanCard({ plan }) {
     setTravelPlan(travelPlans);
   };
 
-  const addToFavorite = (travel) => {};
+  const handleAddToFavorite = (trip) => {
+    setColorIndex((prev) => {
+      const currentIndex = prev[trip.id] ?? -1;
+      const nextIndex = (currentIndex + 1) % colorsArray.length;
+      return { ...prev, [trip.id]: nextIndex };
+    });
+    addToFavorites(trip);
+  };
 
   return (
     <>
@@ -48,7 +56,13 @@ function TravelPlanCard({ plan }) {
               </div>
               <div
                 className="add-to-favorite"
-                onClick={() => addToFavorite(trip)}
+                onClick={() => handleAddToFavorite(trip)}
+                style={{
+                  backgroundColor:
+                    colorIndex[trip.id] !== undefined
+                      ? colorsArray[colorIndex[trip.id]]
+                      : "",
+                }}
               >
                 ♡
               </div>
